@@ -1,0 +1,58 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Update yum cache
+  yum:
+    update_cache: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Install common packages
+  package:
+    name:
+      - vim
+      - htop
+      - net-tools
+      - curl
+      - wget
+      - git
+      - unzip
+      - tree
+    state: present
+
+- name: Configure timezone
+  timezone:
+    name: "{{ timezone | default('UTC') }}"
+
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Configure NTP
+  package:
+    name: ntp
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Start and enable NTP service
+  service:
+    name: ntp
+    state: started
+    enabled: yes
+  when: ansible_os_family == "Debian"
+
+- name: Configure firewall
+  ufw:
+    state: enabled
+    policy: deny
+  when: ansible_os_family == "Debian"
+
+- name: Allow SSH through firewall
+  ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+  when: ansible_os_family == "Debian"

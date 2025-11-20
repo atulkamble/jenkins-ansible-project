@@ -1,0 +1,28 @@
+[webservers]
+web1.prod.example.com ansible_host=10.0.1.10
+web2.prod.example.com ansible_host=10.0.1.11
+web3.prod.example.com ansible_host=10.0.1.12
+
+[appservers]
+app1.prod.example.com ansible_host=10.0.1.20
+app2.prod.example.com ansible_host=10.0.1.21
+app3.prod.example.com ansible_host=10.0.1.22
+
+[databases]
+db1.prod.example.com ansible_host=10.0.1.30
+db2.prod.example.com ansible_host=10.0.1.31
+
+[loadbalancers]
+lb1.prod.example.com ansible_host=10.0.1.40
+lb2.prod.example.com ansible_host=10.0.1.41
+
+[production:children]
+webservers
+appservers
+databases
+loadbalancers
+
+[production:vars]
+ansible_user=ansible
+ansible_ssh_private_key_file=~/.ssh/id_rsa_prod
+env=production

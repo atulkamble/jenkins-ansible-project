@@ -1,0 +1,45 @@
+# Ansible
+*.retry
+.ansible/
+ansible_facts/
+*.swp
+*.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Jenkins
+.jenkins/
+jenkins_home/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+vault-password.txt
+secrets.yml
+*.pem
+*.key
+id_rsa*
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/

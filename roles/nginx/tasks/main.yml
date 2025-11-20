@@ -1,0 +1,52 @@
+---
+- name: Install Nginx
+  package:
+    name: nginx
+    state: present
+
+- name: Create Nginx configuration
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Nginx
+
+- name: Create site configuration
+  template:
+    src: site.conf.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Nginx
+
+- name: Enable site
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  notify: Restart Nginx
+
+- name: Create web root directory
+  file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Deploy index page
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Start and enable Nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes

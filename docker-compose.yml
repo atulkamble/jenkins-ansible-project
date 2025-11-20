@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    networks:
+      - ci-cd
+
+  ansible-control:
+    build:
+      context: .
+      dockerfile: Dockerfile.ansible
+    container_name: ansible-control
+    volumes:
+      - ./:/ansible
+      - ~/.ssh:/root/.ssh:ro
+    working_dir: /ansible
+    command: tail -f /dev/null
+    networks:
+      - ci-cd
+
+networks:
+  ci-cd:
+    driver: bridge
+
+volumes:
+  jenkins_home:

@@ -1,0 +1,26 @@
+# Application Configuration
+# Environment: {{ env }}
+# Generated: {{ ansible_date_time.iso8601 }}
+
+[application]
+name = myapp
+version = 1.0.0
+environment = {{ env }}
+
+[server]
+host = {{ ansible_default_ipv4.address }}
+port = 8080
+
+[database]
+{% if 'databases' in groups %}
+host = {{ groups['databases'][0] }}
+{% else %}
+host = localhost
+{% endif %}
+port = 3306
+name = appdb
+user = appuser
+
+[logging]
+level = {{ 'DEBUG' if env == 'development' else 'INFO' }}
+file = /var/log/myapp/app.log

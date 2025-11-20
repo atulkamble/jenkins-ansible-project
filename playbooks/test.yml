@@ -1,0 +1,59 @@
+---
+- name: Test Deployment
+  hosts: all
+  gather_facts: yes
+  
+  tasks:
+    - name: Check if application directory exists
+      stat:
+        path: /opt/myapp
+      register: app_dir
+    
+    - name: Verify application directory
+      assert:
+        that:
+          - app_dir.stat.exists
+          - app_dir.stat.isdir
+        fail_msg: "Application directory not found"
+        success_msg: "Application directory exists"
+    
+    - name: Check system resources
+      debug:
+        msg: |
+          CPU: {{ ansible_processor_vcpus }}
+          Memory: {{ ansible_memtotal_mb }} MB
+          Disk: {{ ansible_mounts[0].size_total | human_readable }}
+    
+    - name: Test connectivity
+      ping:
+      register: ping_result
+    
+    - name: Verify connectivity
+      assert:
+        that:
+          - ping_result is succeeded
+        success_msg: "Host is reachable"
+        fail_msg: "Host is not reachable"
+
+- name: Test Web Servers
+  hosts: webservers
+  tasks:
+    - name: Check if Nginx is running
+      service:
+        name: nginx
+        state: started
+      check_mode: yes
+      register: nginx_status
+      failed_when: false
+    
+    - name: Test HTTP endpoint
+      uri:
+        url: "http://localhost"
+        status_code: 200
+        timeout: 10
+      register: http_result
+      failed_when: false
+    
+    - name: Display test results
+      debug:
+        msg: "Web server test {{ 'passed' if http_result is succeeded else 'failed' }}"

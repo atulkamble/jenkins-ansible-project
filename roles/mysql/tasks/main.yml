@@ -1,0 +1,47 @@
+---
+- name: Install MySQL server
+  package:
+    name:
+      - mysql-server
+      - python3-pymysql
+    state: present
+
+- name: Start and enable MySQL
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+
+- name: Set MySQL root password
+  mysql_user:
+    name: root
+    password: "{{ mysql_root_password | default('changeme') }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    state: present
+  no_log: true
+
+- name: Create application database
+  mysql_db:
+    name: "{{ mysql_database | default('appdb') }}"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password | default('changeme') }}"
+  no_log: true
+
+- name: Create application user
+  mysql_user:
+    name: "{{ mysql_user | default('appuser') }}"
+    password: "{{ mysql_password | default('changeme') }}"
+    priv: "{{ mysql_database | default('appdb') }}.*:ALL"
+    host: "%"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password | default('changeme') }}"
+  no_log: true
+
+- name: Configure MySQL to listen on all interfaces
+  lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = 0.0.0.0'
+  notify: Restart MySQL

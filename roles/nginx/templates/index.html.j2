@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ env | upper }} - {{ ansible_hostname }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 { color: #333; }
+        .info { color: #666; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deployment Successful!</h1>
+        <p class="info">
+            <strong>Environment:</strong> {{ env }}<br>
+            <strong>Hostname:</strong> {{ ansible_hostname }}<br>
+            <strong>IP Address:</strong> {{ ansible_default_ipv4.address }}<br>
+            <strong>Deployed by:</strong> Jenkins + Ansible
+        </p>
+    </div>
+</body>
+</html>

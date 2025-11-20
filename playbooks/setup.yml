@@ -1,0 +1,58 @@
+---
+- name: Setup Web Servers
+  hosts: webservers
+  become: yes
+  roles:
+    - common
+    - nginx
+  
+  tasks:
+    - name: Configure firewall for web traffic
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - '80'
+        - '443'
+      when: ansible_os_family == "Debian"
+
+- name: Setup Application Servers
+  hosts: appservers
+  become: yes
+  roles:
+    - common
+    - java
+    - nodejs
+  
+  tasks:
+    - name: Configure firewall for app traffic
+      ufw:
+        rule: allow
+        port: '8080'
+        proto: tcp
+      when: ansible_os_family == "Debian"
+
+- name: Setup Database Servers
+  hosts: databases
+  become: yes
+  roles:
+    - common
+    - mysql
+  
+  tasks:
+    - name: Configure firewall for database traffic
+      ufw:
+        rule: allow
+        port: '3306'
+        proto: tcp
+        src: "{{ item }}"
+      loop: "{{ groups['appservers'] }}"
+      when: ansible_os_family == "Debian"
+
+- name: Setup Load Balancers
+  hosts: loadbalancers
+  become: yes
+  roles:
+    - common
+    - haproxy

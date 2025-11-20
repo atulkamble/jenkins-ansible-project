@@ -1,0 +1,28 @@
+---
+- name: Install OpenJDK 11
+  package:
+    name: openjdk-11-jdk
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Install Java (RedHat)
+  package:
+    name: java-11-openjdk-devel
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Set JAVA_HOME
+  lineinfile:
+    path: /etc/environment
+    line: 'JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64'
+    create: yes
+  when: ansible_os_family == "Debian"
+
+- name: Verify Java installation
+  command: java -version
+  register: java_version
+  changed_when: false
+
+- name: Display Java version
+  debug:
+    var: java_version.stderr_lines
