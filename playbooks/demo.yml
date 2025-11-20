@@ -1,0 +1,135 @@
+---
+- name: Local Demo - Test Project Setup
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  become: no
+  
+  vars:
+    app_name: "myapp"
+    app_directory: "{{ ansible_env.HOME }}/jenkins-ansible-demo"
+  
+  tasks:
+    - name: Display environment information
+      debug:
+        msg: |
+          ===================================
+          Jenkins-Ansible Project Demo
+          ===================================
+          Hostname: {{ ansible_hostname }}
+          OS: {{ ansible_distribution }} {{ ansible_distribution_version }}
+          Python: {{ ansible_python_version }}
+          User: {{ ansible_env.USER }}
+          Home: {{ ansible_env.HOME }}
+          ===================================
+    
+    - name: Create demo application directory
+      file:
+        path: "{{ app_directory }}"
+        state: directory
+        mode: '0755'
+    
+    - name: Create app subdirectories
+      file:
+        path: "{{ app_directory }}/{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - config
+        - logs
+        - data
+    
+    - name: Deploy sample application
+      copy:
+        src: "{{ playbook_dir }}/../app/app.py"
+        dest: "{{ app_directory }}/app.py"
+        mode: '0755'
+    
+    - name: Deploy requirements
+      copy:
+        src: "{{ playbook_dir }}/../app/requirements.txt"
+        dest: "{{ app_directory }}/requirements.txt"
+        mode: '0644'
+    
+    - name: Create configuration file
+      copy:
+        content: |
+          # Application Configuration
+          # Generated: {{ ansible_date_time.iso8601 }}
+          
+          [application]
+          name = {{ app_name }}
+          version = 1.0.0
+          environment = local
+          
+          [server]
+          host = localhost
+          port = 8080
+          
+          [paths]
+          app_directory = {{ app_directory }}
+          log_file = {{ app_directory }}/logs/app.log
+        dest: "{{ app_directory }}/config/app.conf"
+        mode: '0644'
+    
+    - name: Create README
+      copy:
+        content: |
+          # Jenkins-Ansible Demo Application
+          
+          ## Deployed Successfully! 🎉
+          
+          **Deployment Info:**
+          - Timestamp: {{ ansible_date_time.iso8601 }}
+          - Environment: Local
+          - User: {{ ansible_env.USER }}
+          - Directory: {{ app_directory }}
+          
+          ## Files Deployed:
+          - app.py (Flask application)
+          - requirements.txt (Python dependencies)
+          - config/app.conf (Configuration)
+          
+          ## To Run the Application:
+          
+          ```bash
+          # Navigate to app directory
+          cd {{ app_directory }}
+          
+          # Install dependencies
+          pip3 install -r requirements.txt
+          
+          # Run the application
+          python3 app.py
+          
+          # Access at: http://localhost:8080
+          ```
+          
+          ## Test Endpoints:
+          - http://localhost:8080/ - Main endpoint
+          - http://localhost:8080/health - Health check
+        dest: "{{ app_directory }}/README.md"
+        mode: '0644'
+    
+    - name: Display deployment summary
+      debug:
+        msg: |
+          ╔══════════════════════════════════════════════════════╗
+          ║     DEPLOYMENT COMPLETED SUCCESSFULLY! ✅            ║
+          ╚══════════════════════════════════════════════════════╝
+          
+          📁 Application Directory: {{ app_directory }}
+          
+          📝 Files Deployed:
+             - app.py
+             - requirements.txt
+             - config/app.conf
+             - README.md
+          
+          🚀 Next Steps:
+             1. cd {{ app_directory }}
+             2. pip3 install -r requirements.txt
+             3. python3 app.py
+             4. Open http://localhost:8080
+          
+          ✨ Your application is ready to run!

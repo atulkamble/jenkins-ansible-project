@@ -1,0 +1,28 @@
+# Local Testing Inventory
+# All services run on localhost for development/testing
+
+[webservers]
+localhost ansible_connection=local
+
+[appservers]
+localhost ansible_connection=local
+
+[databases]
+localhost ansible_connection=local
+
+[loadbalancers]
+localhost ansible_connection=local
+
+[local:children]
+webservers
+appservers
+databases
+loadbalancers
+
+[local:vars]
+ansible_connection=local
+ansible_python_interpreter=/usr/bin/python3
+ansible_become=no
+env=local
+app_user={{ ansible_env.USER }}
+app_directory={{ ansible_env.HOME }}/myapp

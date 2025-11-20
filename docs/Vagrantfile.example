@@ -1,0 +1,90 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+  
+  # Web Server 1
+  config.vm.define "web1" do |web1|
+    web1.vm.hostname = "web1.dev.local"
+    web1.vm.network "private_network", ip: "192.168.56.10"
+    web1.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
+  end
+  
+  # Web Server 2
+  config.vm.define "web2" do |web2|
+    web2.vm.hostname = "web2.dev.local"
+    web2.vm.network "private_network", ip: "192.168.56.11"
+    web2.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
+  end
+  
+  # App Server 1
+  config.vm.define "app1" do |app1|
+    app1.vm.hostname = "app1.dev.local"
+    app1.vm.network "private_network", ip: "192.168.56.20"
+    app1.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 2
+    end
+  end
+  
+  # App Server 2
+  config.vm.define "app2" do |app2|
+    app2.vm.hostname = "app2.dev.local"
+    app2.vm.network "private_network", ip: "192.168.56.21"
+    app2.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 2
+    end
+  end
+  
+  # Database Server
+  config.vm.define "db1" do |db1|
+    db1.vm.hostname = "db1.dev.local"
+    db1.vm.network "private_network", ip: "192.168.56.30"
+    db1.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = 2
+    end
+  end
+  
+  # Load Balancer
+  config.vm.define "lb1" do |lb1|
+    lb1.vm.hostname = "lb1.dev.local"
+    lb1.vm.network "private_network", ip: "192.168.56.40"
+    lb1.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
+  end
+  
+  # Provisioning for all VMs
+  config.vm.provision "shell", inline: <<-SHELL
+    # Update system
+    apt-get update
+    apt-get upgrade -y
+    
+    # Create ansible user
+    useradd -m -s /bin/bash ansible
+    usermod -aG sudo ansible
+    echo "ansible ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible
+    
+    # Setup SSH
+    mkdir -p /home/ansible/.ssh
+    chmod 700 /home/ansible/.ssh
+    
+    # Copy vagrant key for ansible user
+    cp /home/vagrant/.ssh/authorized_keys /home/ansible/.ssh/
+    chown -R ansible:ansible /home/ansible/.ssh
+    chmod 600 /home/ansible/.ssh/authorized_keys
+    
+    # Install Python
+    apt-get install -y python3 python3-pip
+  SHELL
+end

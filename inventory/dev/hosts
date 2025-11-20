@@ -1,16 +1,18 @@
+# Development Inventory
+# For local testing, using localhost
+# Replace with actual server IPs for real deployment
+
 [webservers]
-web1.dev.example.com ansible_host=192.168.1.10
-web2.dev.example.com ansible_host=192.168.1.11
+localhost ansible_connection=local
 
 [appservers]
-app1.dev.example.com ansible_host=192.168.1.20
-app2.dev.example.com ansible_host=192.168.1.21
+localhost ansible_connection=local
 
 [databases]
-db1.dev.example.com ansible_host=192.168.1.30
+localhost ansible_connection=local
 
 [loadbalancers]
-lb1.dev.example.com ansible_host=192.168.1.40
+localhost ansible_connection=local
 
 [development:children]
 webservers
@@ -20,5 +22,26 @@ loadbalancers
 
 [development:vars]
 ansible_user=ansible
-ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_connection=local
+ansible_python_interpreter=/usr/bin/python3
 env=development
+
+# Example configuration for remote servers (uncomment and modify):
+# [webservers]
+# web1.dev.example.com ansible_host=192.168.1.10
+# web2.dev.example.com ansible_host=192.168.1.11
+#
+# [appservers]
+# app1.dev.example.com ansible_host=192.168.1.20
+# app2.dev.example.com ansible_host=192.168.1.21
+#
+# [databases]
+# db1.dev.example.com ansible_host=192.168.1.30
+#
+# [loadbalancers]
+# lb1.dev.example.com ansible_host=192.168.1.40
+#
+# [development:vars]
+# ansible_user=ansible
+# ansible_ssh_private_key_file=~/.ssh/id_rsa
+# env=development
