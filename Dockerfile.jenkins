@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     sshpass \
     openssh-client \
     git \
+    sudo \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Ansible
@@ -24,6 +25,9 @@ RUN mkdir -p /etc/ansible && \
     echo "[defaults]" > /etc/ansible/ansible.cfg && \
     echo "host_key_checking = False" >> /etc/ansible/ansible.cfg && \
     echo "deprecation_warnings = False" >> /etc/ansible/ansible.cfg
+
+# Configure passwordless sudo for jenkins user
+RUN echo "jenkins ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Switch back to jenkins user
 USER jenkins
