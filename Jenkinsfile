@@ -4,13 +4,19 @@ pipeline {
     environment {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
         ANSIBLE_CONFIG = "${WORKSPACE}/ansible.cfg"
+        GIT_REPO = 'https://github.com/atulkamble/jenkins-ansible-project.git'
     }
     
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out code from repository...'
-                checkout scm
+                echo 'Checking out code from GitHub repository...'
+                echo "Repository: ${env.GIT_REPO}"
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[url: "${env.GIT_REPO}"]]
+                ])
             }
         }
         
