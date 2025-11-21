@@ -1,2 +1,8 @@
-Flask==2.3.0
-gunicorn==21.2.0
+# Python dependencies for sample application
+# This app uses only Python standard library (no external deps required)
+# Add your dependencies here if needed
+
+# Examples:
+# flask==2.3.0
+# requests==2.31.0
+# gunicorn==21.2.0

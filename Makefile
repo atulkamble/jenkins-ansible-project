@@ -1,15 +1,29 @@
 .PHONY: help install lint syntax-check test deploy-dev deploy-prod
 
 help:
-	@echo "Jenkins-Ansible Project Commands:"
+	@echo "════════════════════════════════════════════════════════"
+	@echo "  Jenkins-Ansible Project - Available Commands"
+	@echo "════════════════════════════════════════════════════════"
+	@echo ""
+	@echo "📦 Setup & Installation:"
 	@echo "  make install        - Install Ansible dependencies"
+	@echo ""
+	@echo "✅ Testing & Validation:"
+	@echo "  make test          - Test local connectivity"
+	@echo "  make test-dev      - Test development servers"
+	@echo "  make syntax-check  - Validate playbook syntax"
 	@echo "  make lint          - Run Ansible lint"
-	@echo "  make syntax-check  - Check playbook syntax"
-	@echo "  make test          - Test Ansible connectivity (local)"
-	@echo "  make test-dev      - Test development servers connectivity"
+	@echo ""
+	@echo "🚀 Deployment:"
+	@echo "  make demo          - Run local demo deployment"
 	@echo "  make deploy-dev    - Deploy to development"
 	@echo "  make deploy-prod   - Deploy to production"
-	@echo "  make setup-local   - Setup local environment"
+	@echo ""
+	@echo "🔧 Infrastructure Setup:"
+	@echo "  make setup-dev     - Setup development infrastructure"
+	@echo "  make setup-prod    - Setup production infrastructure"
+	@echo ""
+	@echo "════════════════════════════════════════════════════════"
 
 install:
 	ansible-galaxy collection install -r requirements.yml
@@ -42,6 +56,15 @@ setup-dev:
 setup-prod:
 	ansible-playbook -i inventory/prod/hosts playbooks/setup.yml
 
-setup-local:
-	@echo "Setting up local environment..."
-	ansible-playbook -i inventory/local/hosts playbooks/test.yml
+demo:
+	@echo "🚀 Running local demo deployment..."
+	@echo "This will deploy a sample application to ~/jenkins-ansible-demo"
+	ansible-playbook playbooks/demo.yml
+	@echo ""
+	@echo "✅ Demo deployment complete!"
+	@echo "📁 Application directory: ~/jenkins-ansible-demo"
+	@echo ""
+	@echo "🎯 Next steps:"
+	@echo "   cd ~/jenkins-ansible-demo"
+	@echo "   python3 app.py"
+	@echo "   curl http://localhost:8080/"
