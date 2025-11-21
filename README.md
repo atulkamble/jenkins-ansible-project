@@ -1367,8 +1367,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👤 Author
 
 **Atul Kamble**
-- GitHub: [@atulkamble](https://github.com/atulkamble)
-- Repository: [jenkins-ansible-project](https://github.com/atulkamble/jenkins-ansible-project)
+- 🐙 GitHub: [@atulkamble](https://github.com/atulkamble)
+- 💼 LinkedIn: [atuljkamble](https://www.linkedin.com/in/atuljkamble/)
+- 📦 Repository: [jenkins-ansible-project](https://github.com/atulkamble/jenkins-ansible-project)
 
 ## 🙏 Acknowledgments
 
