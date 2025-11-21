@@ -79,7 +79,8 @@ pipeline {
             echo 'Pipeline failed!'
         }
         always {
-            cleanWs()
+            echo 'Cleaning up workspace...'
+            deleteDir()
         }
     }
 }
