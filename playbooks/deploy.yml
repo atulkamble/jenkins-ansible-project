@@ -48,6 +48,14 @@
         mode: '0644'
       notify: Restart application
     
+    - name: Create configuration directory
+      file:
+        path: "{{ app_directory }}/config"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+    
     - name: Create application configuration
       template:
         src: ../templates/app.conf.j2
